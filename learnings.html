@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b1530">
+<title>What I Learnt About the OSI Model</title>
+<meta name="x-captured-frame" content="7E5352433D31302E302E302E373B4453543D31302E302E302E313B5345513D313B54544C3D36343B444154413D3D304B464739304B794D7E">
+<link rel="icon" href="poster.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0b1530; --navy-2: #13224a; --ink: #e9eefb; --muted: #9fb0d6; --line: rgba(255,255,255,.1);
+    --l1: #1d4ed8; --l2: #0e9aa7; --l3: #16a34a; --l4: #ea7a12; --l5: #15803d; --l6: #5b3fb8; --l7: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: radial-gradient(1200px 600px at 80% -10%, #1b2f66 0%, transparent 60%), var(--navy); color: var(--ink);
+         font: 17px/1.75 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; min-height: 100vh;
+         padding: 48px max(20px, env(safe-area-inset-left, 0px)) 64px max(20px, env(safe-area-inset-right, 0px)); }
+  main { max-width: 680px; margin: 0 auto; }
+  .eyebrow { font: 600 12px/1 "Inter", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #60a5fa; }
+  h1 { font: 700 clamp(34px, 7vw, 52px)/1.05 "Oswald", Impact, sans-serif; text-transform: uppercase; letter-spacing: .01em;
+       margin: 12px 0 28px; text-wrap: balance; }
+  p { margin: 0 0 20px; color: #d5ddf2; }
+  p.lead { font-size: 20px; color: var(--ink); }
+  strong { color: #fff; }
+
+  /* the data units, coloured like the poster */
+  .units { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin: 8px 0 30px; }
+  .u { border-radius: 10px; padding: 10px 6px 9px; text-align: center; background: var(--c); }
+  .u small { display: block; font: 600 10px/1.2 "Inter", sans-serif; opacity: .85; text-transform: uppercase; letter-spacing: .06em; }
+  .u b { display: block; font: 700 15px/1.2 "Oswald", sans-serif; margin-top: 4px; letter-spacing: .02em; }
+  .arrows { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin: -22px 2px 30px; }
+  @media (max-width: 560px) {
+    .units { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .u { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 12px; text-align: left; }
+    .u b { margin: 0; }
+    .arrows { margin-top: -18px; }
+  }
+  .term { color: #fff; font-weight: 600; border-bottom: 2px solid #60a5fa; }
+
+  .ctf { margin-top: 40px; padding: 22px; border-radius: 18px; background: rgba(255,255,255,.04); border: 1px solid var(--line); }
+  .ctf-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ctf-tags span { font: 600 11px/1 "Inter", sans-serif; letter-spacing: .08em; text-transform: uppercase; padding: 6px 9px;
+                   border-radius: 999px; background: rgba(96,165,250,.15); color: #93c5fd; }
+  .ctf h2 { font: 700 28px/1.1 "Oswald", Impact, sans-serif; text-transform: uppercase; margin: 14px 0 12px; }
+  .hints { margin: 0 0 18px; padding-left: 20px; color: var(--muted); font-size: 15px; }
+  .hints li + li { margin-top: 4px; }
+  code { font: 500 14px ui-monospace, Consolas, monospace; background: rgba(255,255,255,.08); padding: 2px 6px; border-radius: 6px; color: #fff; }
+  .flag-form { display: flex; gap: 8px; flex-wrap: wrap; }
+  .flag-form input { flex: 1 1 220px; min-width: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line);
+                     background: rgba(0,0,0,.25); color: #fff; font: 500 15px ui-monospace, Consolas, monospace; outline: none; }
+  .flag-form input:focus { border-color: #60a5fa; }
+  .flag-form button { padding: 12px 18px; border: 0; border-radius: 12px; background: #2563eb; color: #fff;
+                      font: 600 14px/1 "Inter", sans-serif; cursor: pointer; }
+  .flag-form button:focus-visible { outline: 2px solid #93c5fd; outline-offset: 3px; }
+  .flag-msg { margin: 12px 0 0; min-height: 1.5em; font-size: 15px; font-weight: 600; }
+  .flag-msg.ok { color: #4ade80; }
+  .flag-msg.bad { color: #fca5a5; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .end { margin-top: 36px; padding-top: 22px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 10px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 16px; border-radius: 12px; text-decoration: none;
+         font: 600 14px/1 "Inter", sans-serif; color: var(--navy); background: #fff; }
+  .btn.alt { color: var(--ink); background: transparent; border: 1px solid var(--line); }
+  .btn:focus-visible { outline: 2px solid #60a5fa; outline-offset: 3px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">OSI 7-layer model · what I learnt</div>
+  <h1>It's not about memorising the layers</h1>
+
+  <p class="lead">When I first learnt the OSI Model, I thought it was mainly about memorising the seven layers.</p>
+  <p>After understanding it better, I realised the important part is knowing how data changes as it moves through a network.</p>
+
+  <div class="units" aria-label="Data unit at each layer">
+    <div class="u" style="--c: var(--l1)"><small>Application</small><b>Data</b></div>
+    <div class="u" style="--c: var(--l2)"><small>Presentation</small><b>Data</b></div>
+    <div class="u" style="--c: var(--l3)"><small>Session</small><b>Data</b></div>
+    <div class="u" style="--c: var(--l4)"><small>Transport</small><b>Segments</b></div>
+    <div class="u" style="--c: var(--l5)"><small>Network</small><b>Packets</b></div>
+    <div class="u" style="--c: var(--l6)"><small>Data Link</small><b>Frames</b></div>
+    <div class="u" style="--c: var(--l7)"><small>Physical</small><b>Bits</b></div>
+  </div>
+  <div class="arrows" aria-hidden="true"><span>Sending: encapsulation →</span><span>← Receiving: decapsulation</span></div>
+
+  <p>At the Application, Presentation and Session layers, it is called <strong>data</strong>. At the Transport layer, it becomes <strong>segments</strong>. At the Network layer, it becomes <strong>packets</strong>. At the Data Link layer, it becomes <strong>frames</strong>, and at the Physical layer, it is transmitted as <strong>bits</strong>.</p>
+  <p>This process is called <span class="term">encapsulation</span>. Each layer adds the information needed to help deliver the data correctly. On the receiving side, the process is reversed through <span class="term">decapsulation</span>.</p>
+  <p>Learning this helped me understand networking and troubleshooting more clearly, so I created this infographic to make the concept easier to remember.</p>
+
+  <section class="ctf" aria-labelledby="ctfTitle">
+    <div class="ctf-tags"><span>CTF</span><span>Web / Misc</span><span>Easy-Medium</span></div>
+    <h2 id="ctfTitle">Challenge: Encapsulation</h2>
+    <p>Somewhere on this website, a secret message was sent down the OSI stack and left behind as raw
+      <strong>frames</strong>. Find every frame, then decapsulate it all the way back up to the Application layer.</p>
+    <ul class="hints">
+      <li>Pages say more than they show.</li>
+      <li>Even robots know where the notes are kept. (This site lives under <code>/aboutme/</code>.)</li>
+      <li>Flag format: <code>NxT{...}</code></li>
+    </ul>
+    <form id="flagForm" class="flag-form" autocomplete="off">
+      <label for="flagInput" class="sr">Flag</label>
+      <input id="flagInput" placeholder="NxT{...}" spellcheck="false" maxlength="80">
+      <button type="submit">Submit flag</button>
+    </form>
+    <p id="flagMsg" class="flag-msg" role="status" aria-live="polite"></p>
+  </section>
+
+  <div class="end">
+    <a class="btn" href="poster.html">See the infographic</a>
+    <a class="btn alt" href="./">Back to start</a>
+  </div>
+  <script>
+    // Only the flag's SHA-256 fingerprint is stored here, not the flag itself.
+    const FLAG_SHA256 = "63ce76e5eb94ade3040ff4cbbe84fd9a57ab58aa7233457409cfd3fa146955e8";
+    async function sha256(text) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+      return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+    document.getElementById("flagForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById("flagMsg"), val = document.getElementById("flagInput").value.trim();
+      if (!val) { msg.textContent = "Type a flag first."; msg.className = "flag-msg"; return; }
+      const ok = (await sha256(val)) === FLAG_SHA256;
+      msg.textContent = ok ? "Correct! Fully decapsulated, all 7 layers. Nice work." :
+        (/^NxT\{.*\}$/.test(val) ? "Not quite. Check your segment order and every layer you undid." : "Wrong format. Flags look like NxT{...}");
+      msg.className = "flag-msg " + (ok ? "ok" : "bad");
+    });
+  </script>
+</main>
+</body>
+</html>

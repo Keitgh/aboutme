@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /
+
+# Network ops: packet capture notes are at /aboutme/capture-notes.txt

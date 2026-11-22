@@ -1,0 +1,12 @@
+=== PACKET CAPTURE NOTES ===
+Captured 3 frames while a message travelled DOWN the OSI stack on this website.
+They were left behind in the page source. Look closely at all 3 pages: comments, meta tags, styles.
+
+- Each frame starts and ends with the flag byte 0x7E (Data Link).
+- Inside each frame is a packet header (Network) with a sequence number.
+- Reassemble the segments in SEQ order (Transport).
+- Then keep climbing back UP the stack: Session -> Presentation -> Application.
+  The Session layer flipped things around. The Presentation layer used a classic
+  13-step "encryption". The Application layer spoke in base 64.
+
+Good luck. -- NOC
